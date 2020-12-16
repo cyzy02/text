@@ -1,0 +1,66 @@
+//获取信息
+              wx.request({
+                url: "http://api.heclouds.com/devices/656220817/datastreams",
+                method:'GET',
+                date:{ 
+                },
+                header:{
+                  "content-type": 'application/json',
+                  "api-key":"4DAJAEpYEzhp5ErVSkNN8zpaTCg="
+                },
+                success(res){
+                  var app = getApp()
+                  app.globalData.x = res.data.data.datastreams
+                  if (res.data.data.datastreams='enter')
+                   {
+                     //显示提示框
+                    wx.showModal({
+                      title: '提示～',
+                      content: '有人进入！',
+                      success: function (res) {
+                        if (res.confirm) {
+                          console.log('用户点击确定')
+                        } else if (res.cancel) {
+                          console.log('用户点击取消')
+                        }
+                      }
+                    })
+                   }
+            }                 
+  })
+//图片格式转换
+      successFunForImg:function(res,selfobj){
+        selfobj.setData({
+          expressData:res,
+        })
+        var base64=wx.arrayBufferToBase64(res);
+        this.setData({
+          captchaImage:"data:image/PNG;base64,"+base64
+        })
+     //保存图片 
+      wx.getSetting({
+        success(res) {
+          wx.downloadFile({
+         url:'',
+            success: function (res) {
+              console.log(res, );
+              wx.saveImageToPhotosAlbum({
+                filePath: res.tempFilePath,
+                success: function (data) {
+                  wx.showToast({
+                    title: "保存图片成功",
+                    icon: "success",
+                    duration: 2000
+                  });
+                },
+                fail: function (err) {
+                  console.log(err);
+                },
+                complete(res) {
+                  console.log(res);
+                }
+              });
+            }
+          });
+        }
+      });
